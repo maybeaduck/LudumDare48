@@ -13,5 +13,7 @@ namespace Zlodey
         [Header("Prefabs")]
         public AudioSource AudioSourcePrefab;
         public UI UIPrefab;
+        public float speed;
+        public float speedRotation;
     }
 }

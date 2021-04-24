@@ -1,0 +1,13 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/modules.xml
+/projectSettingsUpdater.xml
+/contentModel.xml
+/.idea.LudumDare48.iml
+# Datasource local storage ignored files
+/../../../../../../../../:\Unity\BibaAndBobaProduction\LudumDare48\LudumDare48\.idea\.idea.LudumDare48\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
