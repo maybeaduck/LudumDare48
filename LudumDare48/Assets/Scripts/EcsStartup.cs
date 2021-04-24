@@ -35,7 +35,8 @@ namespace Zlodey
             _systems
                 .Add(new InitializeSystem())
                 .Add(new ChangeGameStateSystem())
-                
+                .Add(new PersonControlSystem())
+                .Add(new PersonLookAtMouseSystem())
                 .Add(new WinSystem())
                 .Add(new LoseSystem())
                 
@@ -72,5 +73,67 @@ namespace Zlodey
                 _world = null;
             }
         }
+    }
+
+    internal class PersonControlSystem : IEcsRunSystem
+    {
+        private EcsWorld _world;
+        private RuntimeData _runtime;
+        private SceneData _scene;
+        private StaticData _static;
+        private EcsFilter<PersonData>.Exclude<StandFlag> _activePersons;
+        public void Run()
+        {
+            
+            foreach (var item in _activePersons)
+            {
+                ref var person = ref _activePersons.Get1(item).actor;
+                var normalDirection = new Vector3(Input.GetAxis("Horizontal")*_static.speed * Time.deltaTime,person.transform.position.y,Input.GetAxis("Vertical")*_static.speed * Time.deltaTime);
+                
+                if (Mathf.Abs(normalDirection.x) > 0 || Mathf.Abs(normalDirection.z) > 0)
+                {
+                    person.Animator.SetBool("Run",true);
+                }
+                else
+                {
+                    person.Animator.SetBool("Run",false);
+                }
+                
+                
+            }
+        }
+    }
+    internal class PersonLookAtMouseSystem : IEcsRunSystem
+    {
+        private EcsWorld _world;
+        private RuntimeData _runtime;
+        private SceneData _scene;
+        private StaticData _static;
+        private EcsFilter<PersonData>.Exclude<StandFlag> _activePersons;
+        public void Run()
+        {
+            
+            foreach (var item in _activePersons)
+            {
+                Debug.Log("WhoNotWork");
+                ref var person = ref _activePersons.Get1(item).actor;
+                var position = person.transform.position;
+                Plane plane = new Plane(Vector3.up,position);
+                Ray ray = _scene.Camera.ScreenPointToRay(Input.mousePosition);
+                if (plane.Raycast(ray, out var hit))
+                {
+                    Vector3 target = ray.GetPoint(hit);
+                    Quaternion rotation = Quaternion.LookRotation(target - position);
+                    person.transform.rotation = Quaternion.Slerp(person.transform.rotation, rotation,
+                        _static.speedRotation * Time.deltaTime);
+
+                }
+
+            }
+        }
+    }
+
+    internal struct StandFlag
+    {
     }
 }
